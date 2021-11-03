@@ -16,29 +16,48 @@
  */
 package org.apache.rocketmq.example.filter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.remoting.common.RemotingHelper;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class TagFilterProducer {
 
     public static void main(String[] args) throws Exception {
 
         DefaultMQProducer producer = new DefaultMQProducer("please_rename_unique_group_name");
+        producer.setNamesrvAddr("127.0.0.1:9876");
         producer.start();
 
         String[] tags = new String[] {"TagA", "TagB", "TagC"};
 
-        for (int i = 0; i < 60; i++) {
-            Message msg = new Message("TagFilterTest",
-                tags[i % tags.length],
-                "Hello world".getBytes(RemotingHelper.DEFAULT_CHARSET));
+        InputStreamReader is = new InputStreamReader(System.in);
+        BufferedReader br = new BufferedReader(is);
+        while (true) {
+            String txt = br.readLine();
+            if (StringUtils.isNotEmpty(txt)) {
+                Message msg = new Message("TagFilterTest",
+                        "TagA",
+                        txt.getBytes(RemotingHelper.DEFAULT_CHARSET));
 
-            SendResult sendResult = producer.send(msg);
-            System.out.printf("%s%n", sendResult);
+                SendResult sendResult = producer.send(msg);
+                System.out.printf("%s%n", sendResult);
+            }
         }
 
-        producer.shutdown();
+        // for (int i = 0; i < 60; i++) {
+        //     Message msg = new Message("TagFilterTest",
+        //         tags[i % tags.length],
+        //         "Hello world".getBytes(RemotingHelper.DEFAULT_CHARSET));
+        //
+        //     SendResult sendResult = producer.send(msg);
+        //     System.out.printf("%s%n", sendResult);
+        // }
+
+        // producer.shutdown();
     }
 }

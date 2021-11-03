@@ -1,0 +1,26 @@
+1、启动：NamesrvStartup类
+设置环境变量（environment variables），配置如下：
+ROCKETMQ_HOME=/Users/wanghongzhan/IdeaProjects/rocketmq/distribution
+
+2、启动：BrokerStartup类
+设置环境变量（environment variables），配置如下：
+ROCKETMQ_HOME=/Users/wanghongzhan/IdeaProjects/rocketmq/distribution
+autoCreateTopicEnable=true;
+NAMESRV_ADDR=127.0.0.1:9876
+
+3、启动生产者和消费者，如果启动报："No route info of this topic"可以添加如下代码设置name service
+producer.setNamesrvAddr("127.0.0.1:9876");
+consumer.setNamesrvAddr("127.0.0.1:9876");
+
+
+
+
+启动相关问题记录：
+
+Rocketmq之No route info of this topic解决思路
+    https://cloud.tencent.com/developer/article/1447341
+
+排查broker无法注册到name server上的一个原因：
+    https://blog.csdn.net/qq_40712111/article/details/117399664
+
+
