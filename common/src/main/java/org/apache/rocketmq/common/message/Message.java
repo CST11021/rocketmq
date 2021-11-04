@@ -26,17 +26,13 @@ public class Message implements Serializable {
     private static final long serialVersionUID = 8445773977080406428L;
 
     private String topic;
-    private int flag;
-    private Map<String, String> properties;
     private byte[] body;
+    private int flag;
+    /** 存储消息标签和消息key */
+    private Map<String, String> properties;
     private String transactionId;
 
-    public Message() {
-    }
 
-    public Message(String topic, byte[] body) {
-        this(topic, "", "", 0, body, true);
-    }
 
     public Message(String topic, String tags, String keys, int flag, byte[] body, boolean waitStoreMsgOK) {
         this.topic = topic;
@@ -51,11 +47,14 @@ public class Message implements Serializable {
 
         this.setWaitStoreMsgOK(waitStoreMsgOK);
     }
-
+    public Message() {
+    }
+    public Message(String topic, byte[] body) {
+        this(topic, "", "", 0, body, true);
+    }
     public Message(String topic, String tags, byte[] body) {
         this(topic, tags, "", 0, body, true);
     }
-
     public Message(String topic, String tags, String keys, byte[] body) {
         this(topic, tags, keys, 0, body, true);
     }

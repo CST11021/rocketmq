@@ -17,12 +17,10 @@
 
 package org.apache.rocketmq.example.rpc;
 
-import java.util.List;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
-import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.SendResult;
@@ -30,9 +28,11 @@ import org.apache.rocketmq.client.utils.MessageUtil;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageExt;
-import org.apache.rocketmq.remoting.exception.RemotingException;
+
+import java.util.List;
 
 public class ResponseConsumer {
+
     public static void main(String[] args) throws InterruptedException, MQClientException {
         String producerGroup = "please_rename_unique_group_name";
         String consumerGroup = "please_rename_unique_group_name";
@@ -40,34 +40,37 @@ public class ResponseConsumer {
 
         // create a producer to send reply message
         DefaultMQProducer replyProducer = new DefaultMQProducer(producerGroup);
+        replyProducer.setNamesrvAddr("127.0.0.1:9876");
         replyProducer.start();
 
         // create consumer
         DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(consumerGroup);
         consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_LAST_OFFSET);
-
         // recommend client configs
         consumer.setPullTimeDelayMillsWhenException(0L);
+        consumer.setNamesrvAddr("127.0.0.1:9876");
 
         consumer.registerMessageListener(new MessageListenerConcurrently() {
             @Override
             public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
-                System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), msgs);
+
                 for (MessageExt msg : msgs) {
                     try {
-                        System.out.printf("handle message: %s", msg.toString());
-                        String replyTo = MessageUtil.getReplyToClient(msg);
+                        System.out.println("处理消息：" + new String(msg.getBody()));
+
                         byte[] replyContent = "reply message contents.".getBytes();
-                        // create reply message with given util, do not create reply message by yourself
+                        // 使用给定的工具创建回复消息，不要自己创建回复消息
                         Message replyMessage = MessageUtil.createReplyMessage(msg, replyContent);
 
-                        // send reply message with producer
+                        // 向生产者发送回复消息
                         SendResult replyResult = replyProducer.send(replyMessage, 3000);
-                        System.out.printf("reply to %s , %s %n", replyTo, replyResult.toString());
-                    } catch (MQClientException | RemotingException | MQBrokerException | InterruptedException e) {
+                        String replyTo = MessageUtil.getReplyToClient(msg);
+                        System.out.println("消息回复给：" + replyTo + ", 回复内容：" + replyResult.getSendStatus().name());
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
+
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
         });

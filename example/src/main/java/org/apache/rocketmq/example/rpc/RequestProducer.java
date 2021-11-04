@@ -17,32 +17,39 @@
 
 package org.apache.rocketmq.example.rpc;
 
-import org.apache.rocketmq.client.exception.MQClientException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.remoting.common.RemotingHelper;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 public class RequestProducer {
-    public static void main(String[] args) throws MQClientException, InterruptedException {
+
+    public static void main(String[] args) throws Exception {
         String producerGroup = "please_rename_unique_group_name";
         String topic = "RequestTopic";
         long ttl = 3000;
 
         DefaultMQProducer producer = new DefaultMQProducer(producerGroup);
+        producer.setNamesrvAddr("127.0.0.1:9876");
         producer.start();
 
-        try {
-            Message msg = new Message(topic,
-                "",
-                "Hello world".getBytes(RemotingHelper.DEFAULT_CHARSET));
+        InputStreamReader is = new InputStreamReader(System.in);
+        BufferedReader br = new BufferedReader(is);
+        while (true) {
+            String txt = br.readLine();
+            if (StringUtils.isNotEmpty(txt)) {
+                Message msg = new Message(topic, "", txt.getBytes(RemotingHelper.DEFAULT_CHARSET));
 
-            long begin = System.currentTimeMillis();
-            Message retMsg = producer.request(msg, ttl);
-            long cost = System.currentTimeMillis() - begin;
-            System.out.printf("request to <%s> cost: %d replyMessage: %s %n", topic, cost, retMsg);
-        } catch (Exception e) {
-            e.printStackTrace();
+                long begin = System.currentTimeMillis();
+                Message retMsg = producer.request(msg, ttl);
+                long cost = System.currentTimeMillis() - begin;
+                System.out.printf("request to <%s> cost: %d replyMessage: %s %n", topic, cost, retMsg);
+            }
         }
-        producer.shutdown();
+
+        // producer.shutdown();
     }
 }
