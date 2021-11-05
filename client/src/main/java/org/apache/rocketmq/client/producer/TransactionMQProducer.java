@@ -16,13 +16,18 @@
  */
 package org.apache.rocketmq.client.producer;
 
-import java.util.concurrent.ExecutorService;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.protocol.NamespaceUtil;
 import org.apache.rocketmq.remoting.RPCHook;
 
+import java.util.concurrent.ExecutorService;
+
+/**
+ * 事务消息生产者
+ */
 public class TransactionMQProducer extends DefaultMQProducer {
+
     private TransactionCheckListener transactionCheckListener;
     private int checkThreadPoolMinSize = 1;
     private int checkThreadPoolMaxSize = 1;
@@ -32,28 +37,27 @@ public class TransactionMQProducer extends DefaultMQProducer {
 
     private TransactionListener transactionListener;
 
+
+
     public TransactionMQProducer() {
     }
-
     public TransactionMQProducer(final String producerGroup) {
         this(null, producerGroup, null);
     }
-
     public TransactionMQProducer(final String namespace, final String producerGroup) {
         this(namespace, producerGroup, null);
     }
-
     public TransactionMQProducer(final String producerGroup, RPCHook rpcHook) {
         this(null, producerGroup, rpcHook);
     }
-
     public TransactionMQProducer(final String namespace, final String producerGroup, RPCHook rpcHook) {
         super(namespace, producerGroup, rpcHook);
     }
-
     public TransactionMQProducer(final String namespace, final String producerGroup, RPCHook rpcHook, boolean enableMsgTrace, final String customizedTraceTopic) {
         super(namespace, producerGroup, rpcHook, enableMsgTrace, customizedTraceTopic);
     }
+
+
 
     @Override
     public void start() throws MQClientException {
@@ -73,8 +77,7 @@ public class TransactionMQProducer extends DefaultMQProducer {
      */
     @Override
     @Deprecated
-    public TransactionSendResult sendMessageInTransaction(final Message msg,
-        final LocalTransactionExecuter tranExecuter, final Object arg) throws MQClientException {
+    public TransactionSendResult sendMessageInTransaction(final Message msg, final LocalTransactionExecuter tranExecuter, final Object arg) throws MQClientException {
         if (null == this.transactionCheckListener) {
             throw new MQClientException("localTransactionBranchCheckListener is null", null);
         }
@@ -84,8 +87,7 @@ public class TransactionMQProducer extends DefaultMQProducer {
     }
 
     @Override
-    public TransactionSendResult sendMessageInTransaction(final Message msg,
-        final Object arg) throws MQClientException {
+    public TransactionSendResult sendMessageInTransaction(final Message msg, final Object arg) throws MQClientException {
         if (null == this.transactionListener) {
             throw new MQClientException("TransactionListener is null", null);
         }
@@ -93,6 +95,11 @@ public class TransactionMQProducer extends DefaultMQProducer {
         msg.setTopic(NamespaceUtil.wrapNamespace(this.getNamespace(), msg.getTopic()));
         return this.defaultMQProducerImpl.sendMessageInTransaction(msg, null, arg);
     }
+
+
+
+
+    // getter and setter ...
 
     public TransactionCheckListener getTransactionCheckListener() {
         return transactionCheckListener;

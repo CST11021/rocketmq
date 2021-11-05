@@ -84,9 +84,7 @@ public class DefaultMQProducer extends ClientConfig implements MQProducer {
      */
     private volatile int defaultTopicQueueNums = 4;
 
-    /**
-     * Timeout for sending messages.
-     */
+    /** 发送消息的默认超时时间：3秒 */
     private int sendMsgTimeout = 3000;
 
     /**
@@ -113,9 +111,7 @@ public class DefaultMQProducer extends ClientConfig implements MQProducer {
      */
     private boolean retryAnotherBrokerWhenNotStoreOK = false;
 
-    /**
-     * Maximum allowed message size in bytes.
-     */
+    /** 允许的最大消息大小：4M。 */
     private int maxMessageSize = 1024 * 1024 * 4; // 4M
 
     /**
@@ -602,7 +598,7 @@ public class DefaultMQProducer extends ClientConfig implements MQProducer {
 
 
     /**
-     * Send request message in synchronous mode. This method returns only when the consumer consume the request message and reply a message. </p>
+     * 以同步方式发送消息，此方法仅在消费者消费接收到消息并回复消息时返回。
      *
      * <strong>Warn:</strong> this method has internal retry-mechanism, that is, internal implementation will retry
      * {@link #retryTimesWhenSendFailed} times before claiming failure. As a result, multiple messages may potentially

@@ -38,7 +38,7 @@ public class ResponseConsumer {
         String consumerGroup = "please_rename_unique_group_name";
         String topic = "RequestTopic";
 
-        // create a producer to send reply message
+        // 创建一个生产者来发送回复消息
         DefaultMQProducer replyProducer = new DefaultMQProducer(producerGroup);
         replyProducer.setNamesrvAddr("127.0.0.1:9876");
         replyProducer.start();
@@ -51,6 +51,7 @@ public class ResponseConsumer {
         consumer.setNamesrvAddr("127.0.0.1:9876");
 
         consumer.registerMessageListener(new MessageListenerConcurrently() {
+
             @Override
             public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
 
@@ -73,10 +74,13 @@ public class ResponseConsumer {
 
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
+
         });
 
         consumer.subscribe(topic, "*");
         consumer.start();
-        System.out.printf("Consumer Started.%n");
+        System.out.println("Consumer已启动");
     }
+
+
 }

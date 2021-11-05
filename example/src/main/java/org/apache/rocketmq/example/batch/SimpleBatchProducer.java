@@ -17,19 +17,24 @@
 
 package org.apache.rocketmq.example.batch;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.common.message.Message;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 批量发送消息的生产者
+ */
 public class SimpleBatchProducer {
 
     public static void main(String[] args) throws Exception {
         DefaultMQProducer producer = new DefaultMQProducer("BatchProducerGroupName");
+        producer.setNamesrvAddr("127.0.0.1:9876");
         producer.start();
 
-        //If you just send messages of no more than 1MiB at a time, it is easy to use batch
-        //Messages of the same batch should have: same topic, same waitStoreMsgOK and no schedule support
+        // 如果你一次只发送不超过 1MiB 的消息，使用批处理很容易
+        // 同一批的消息应该有：相同的主题，相同的waitStoreMsgOK，没有调度支持
         String topic = "BatchTest";
         List<Message> messages = new ArrayList<>();
         messages.add(new Message(topic, "Tag", "OrderID001", "Hello world 0".getBytes()));

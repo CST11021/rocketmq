@@ -15,6 +15,12 @@ consumer.setNamesrvAddr("127.0.0.1:9876");
 
 
 
+“Request-Reply”特性:
+    https://blog.csdn.net/weixin_42528266/article/details/108625272
+    https://blog.csdn.net/qq_25145759/article/details/113878983
+
+
+
 启动相关问题记录：
 
 Rocketmq之No route info of this topic解决思路
