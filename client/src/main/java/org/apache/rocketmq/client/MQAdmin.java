@@ -27,6 +27,8 @@ import org.apache.rocketmq.remoting.exception.RemotingException;
  */
 public interface MQAdmin {
 
+    // 创建topic
+
     /**
      * Creates an topic
      *
@@ -35,7 +37,6 @@ public interface MQAdmin {
      * @param queueNum topic's queue number
      */
     void createTopic(final String key, final String newTopic, final int queueNum) throws MQClientException;
-
     /**
      * Creates an topic
      *
@@ -47,8 +48,8 @@ public interface MQAdmin {
     void createTopic(String key, String newTopic, int queueNum, int topicSysFlag) throws MQClientException;
 
     /**
-     * Gets the message queue offset according to some time in milliseconds<br>
-     * be cautious to call because of more IO overhead
+     * 根据某个时间以毫秒为单位获取消息队列偏移量
+     * 注意：小心调用，因为更多的 IO 开销
      *
      * @param mq Instance of MessageQueue
      * @param timestamp from when in milliseconds.
@@ -57,7 +58,7 @@ public interface MQAdmin {
     long searchOffset(final MessageQueue mq, final long timestamp) throws MQClientException;
 
     /**
-     * Gets the max offset
+     * 获取最大偏移量
      *
      * @param mq Instance of MessageQueue
      * @return the max offset
@@ -65,7 +66,7 @@ public interface MQAdmin {
     long maxOffset(final MessageQueue mq) throws MQClientException;
 
     /**
-     * Gets the minimum offset
+     * 获取最小偏移量
      *
      * @param mq Instance of MessageQueue
      * @return the minimum offset
@@ -73,7 +74,7 @@ public interface MQAdmin {
     long minOffset(final MessageQueue mq) throws MQClientException;
 
     /**
-     * Gets the earliest stored message time
+     * 获取最早存储的消息时间
      *
      * @param mq Instance of MessageQueue
      * @return the time in microseconds
@@ -81,7 +82,7 @@ public interface MQAdmin {
     long earliestMsgStoreTime(final MessageQueue mq) throws MQClientException;
 
     /**
-     * Query message according to message id
+     * 根据消息id查询消息
      *
      * @param offsetMsgId message id
      * @return message
@@ -89,10 +90,10 @@ public interface MQAdmin {
     MessageExt viewMessage(final String offsetMsgId) throws RemotingException, MQBrokerException, InterruptedException, MQClientException;
 
     /**
-     * Query messages
+     * 查询消息
      *
-     * @param topic message topic
-     * @param key message key index word
+     * @param topic     topic
+     * @param key       消息key
      * @param maxNum max message number
      * @param begin from when
      * @param end to when

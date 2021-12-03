@@ -25,6 +25,7 @@ import org.apache.rocketmq.client.exception.MQClientException;
  * Push consumer
  */
 public interface MQPushConsumer extends MQConsumer {
+
     /**
      * Start the consumer
      */
@@ -35,15 +36,16 @@ public interface MQPushConsumer extends MQConsumer {
      */
     void shutdown();
 
+
+
     /**
      * Register the message listener
      */
     @Deprecated
     void registerMessageListener(MessageListener messageListener);
-
     void registerMessageListener(final MessageListenerConcurrently messageListener);
-
     void registerMessageListener(final MessageListenerOrderly messageListener);
+
 
     /**
      * Subscribe some topic
@@ -53,7 +55,6 @@ public interface MQPushConsumer extends MQConsumer {
      * all
      */
     void subscribe(final String topic, final String subExpression) throws MQClientException;
-
     /**
      * This method will be removed in the version 5.0.0,because filterServer was removed,and method <code>subscribe(final String topic, final MessageSelector messageSelector)</code>
      * is recommended.
@@ -64,9 +65,7 @@ public interface MQPushConsumer extends MQConsumer {
      * @param filterClassSource class source code,used UTF-8 file encoding,must be responsible for your code safety
      */
     @Deprecated
-    void subscribe(final String topic, final String fullClassName,
-        final String filterClassSource) throws MQClientException;
-
+    void subscribe(final String topic, final String fullClassName, final String filterClassSource) throws MQClientException;
     /**
      * Subscribe some topic with selector.
      * <p>
@@ -85,7 +84,6 @@ public interface MQPushConsumer extends MQConsumer {
      * @param selector message selector({@link MessageSelector}), can be null.
      */
     void subscribe(final String topic, final MessageSelector selector) throws MQClientException;
-
     /**
      * Unsubscribe consumption some topic
      *
@@ -93,18 +91,22 @@ public interface MQPushConsumer extends MQConsumer {
      */
     void unsubscribe(final String topic);
 
+
     /**
-     * Update the consumer thread pool size Dynamically
+     * 暂停消息
+     */
+    void suspend();
+    /**
+     * 恢复消费
+     */
+    void resume();
+
+
+    /**
+     * 动态更新消费者线程池大小
+     *
+     * @param corePoolSize
      */
     void updateCorePoolSize(int corePoolSize);
 
-    /**
-     * Suspend the consumption
-     */
-    void suspend();
-
-    /**
-     * Resume the consumption
-     */
-    void resume();
 }

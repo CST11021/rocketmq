@@ -30,3 +30,9 @@ Rocketmq之No route info of this topic解决思路
     https://blog.csdn.net/qq_40712111/article/details/117399664
 
 
+
+
+example案例说明：
+1、batch：
+    1.1、SimpleBatchProducer：批量发送消息
+    1.2、
